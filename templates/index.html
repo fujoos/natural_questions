@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Data Viewer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='src/style' + ('.min.css' if use_minified_css else '.css')) }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='src/script' + ('.min.js' if use_minified_js else '.js')) }}"></script>
+</head>
+<body>
+<div id="loading-indicator" class="loading-indicator" style="display: none;">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 0;" aria-valuenow="0" aria-valuemin="0"
+             aria-valuemax="100"></div>
+    </div>
+</div>
+<div class="container-fluid mt-5">
+    <h2>CSV Data Viewer</h2>
+    <div class="text-center mb-4">
+        <label for="csv-selector">Dataset&nbsp;</label>
+        <select id="csv-selector" class="custom-select w-auto">
+            {% for file_id, file_name in file_options.items() %}
+                <option value="{{ file_id }}">{{ file_name | capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="text-center mb-4 page-size-selector">
+        <label for="page-size">Items per page:</label>
+        <select id="page-size" class="custom-select w-auto">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <!-- Pagination controls will be dynamically inserted here by the JavaScript code -->
+        </ul>
+    </nav>
+    <div class="table-container"> <!-- Container for the table and overlay -->
+        <div class="table-responsive"> <!-- This makes the table scrollable on smaller screens -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>
+                        <button id="refresh-data" class="btn" style="background: none; border: none;">
+                            <i class="fas fa-sync-alt" style="color: black;"></i>
+                        </button>
+                    </th>
+                    <th>Question</th>
+                    <th>Long Answers</th>
+                    <th>Short Answers</th>
+                </tr>
+                </thead>
+                <tbody id="data-rows">
+                <!-- Table rows will be inserted dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <div id="table-overlay" class="overlay"></div>
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <!-- Pagination controls will be dynamically inserted here by the JavaScript code -->
+        </ul>
+    </nav>
+</div>
+</body>
+</html>
