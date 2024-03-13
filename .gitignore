@@ -2,3 +2,7 @@ Natural-Questions-Base.csv
 Natural-Questions-Filtered.csv
 Natural-Questions-Base.parquet
 Natural-Questions-Filtered.parquet
+.git/
+.idea/
+__pycache__/
+venv/
