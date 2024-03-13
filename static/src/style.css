@@ -1,0 +1,61 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+.table-container {
+    position: relative; /* Establishes a new positioning context */
+}
+
+.progress {
+    height: 10px; /* Height of the dark path */
+    background-color: #e9ecef; /* Color of the dark path */
+    border-radius: 5px; /* Rounded corners for the dark path */
+    overflow: hidden; /* Ensures the inner .progress-bar stays within the rounded corners */
+}
+
+.progress-bar {
+    height: 100%; /* Full height of the outer .progress */
+    background-color: #007bff; /* Color of the progress bar, change as needed */
+    border-radius: 5px; /* Rounded corners for the progress bar */
+    box-shadow: none; /* No shadow for a flat design like in the picture */
+    transition: width 0.6s ease; /* Smooth transition for width changes */
+}
+
+.loading-indicator {
+    position: sticky; /* Sticky position relative to the viewport */
+    top: 0; /* Stick to the top of the viewport */
+    z-index: 1020; /* Higher than most elements */
+    width: 50%; /* Same width as before for central alignment */
+    left: 50%; /* Position it centrally */
+    transform: translateX(-50%); /* Adjust horizontal position */
+}
+
+.overlay {
+    position: absolute; /* Positioned relative to .table-container */
+    top: 0;
+    left: 0;
+    width: 100%; /* Cover the full width of .table-container */
+    height: 100%; /* Cover the full height of .table-container */
+    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent black */
+    display: none; /* Hidden by default */
+    z-index: 10; /* Ensure it appears above the table content but below the spinner */
+}
+
+
+.table {
+    width: 100% !important; /* Ensure table takes full width */
+    table-layout: auto; /* Allows table to expand based on content */
+}
+
+.table th, .table td {
+    max-width: none; /* Removes any max-width constraints */
+    color: #222;
+}
+
+/* Optional: Add custom styles for table responsiveness on smaller screens */
+@media screen and (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto; /* Allows table to scroll horizontally on small screens */
+    }
+}
