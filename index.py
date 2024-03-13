@@ -10,11 +10,9 @@ from os.path import basename, splitext  # Functions for manipulating file paths 
 import pandas as pd  # Data manipulation and analysis library
 import pyarrow.parquet as pq  # PyArrow's library for direct Parquet file manipulation
 from flask import Flask, jsonify, request, render_template  # Flask web framework and its functions
-from flask_cors import CORS  # Handling Cross-Origin Resource Sharing (CORS)
 from bs4 import BeautifulSoup  # Import BeautifulSoup
 
 app = Flask(__name__)
-CORS(app)
 
 PAGE_SIZE = 10
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
