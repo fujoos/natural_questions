@@ -1,10 +1,13 @@
-body {
-    font-family: 'Poppins', sans-serif;
+body, .custom-select {
+    font-family: 'Manrope', sans-serif;
     font-size: 14px;
 }
-
 .table-container {
     position: relative; /* Establishes a new positioning context */
+}
+
+.long-answers-col {
+    width: 70%; /* Adjust the width as needed */
 }
 
 .progress {
@@ -23,7 +26,7 @@ body {
 }
 
 .loading-indicator {
-    position: sticky; /* Sticky position relative to the viewport */
+    position: fixed; /* Sticky position relative to the viewport */
     top: 0; /* Stick to the top of the viewport */
     z-index: 1020; /* Higher than most elements */
     width: 50%; /* Same width as before for central alignment */
@@ -42,6 +45,42 @@ body {
     z-index: 10; /* Ensure it appears above the table content but below the spinner */
 }
 
+button.refresh-data {
+    background: none;
+    border: none;
+}
+
+.btn.focus, .btn:focus {
+    box-shadow: none;
+}
+
+/* Light mode styles */
+:root .icon-refresh {
+    color: #333; /* Default color for light mode */
+      transition: transform 0.2s ease; /* Smooth transformation */
+}
+
+/* Click effect class */
+.icon-clicked {
+  transform: scale(1.1); /* Increase the icon size to 150% when clicked */
+}
+
+/* Hover state for the button, ensuring icon returns to normal state */
+#refresh-data:hover .icon-refresh {
+    transform: scale(1); /* Return to original scale when hovered away */
+}
+
+/* Dark mode styles */
+body.dark-mode .icon-refresh {
+    color: rgb(236, 236, 236); /* Color for dark mode */
+}
+
+.pagination-container {
+  min-height: 50px; /* Adjust the height based on your pagination control's size */
+  display: flex;
+  justify-content: center; /* Center the pagination controls horizontally */
+  align-items: center; /* Center the pagination controls vertically */
+}
 
 .table {
     width: 100% !important; /* Ensure table takes full width */
@@ -50,7 +89,76 @@ body {
 
 .table th, .table td {
     max-width: none; /* Removes any max-width constraints */
-    color: #222;
+}
+
+/* Table styles for light mode */
+.table {
+    background-color: #fff;
+    color: #0d0d0d;
+    border-color: #ddd;
+}
+
+/* Table header styles for light mode */
+.table thead th {
+    background-color: #f8f9fa;
+    color: #0d0d0d;
+    vertical-align: middle;
+}
+
+/* This assumes you want to center all buttons within table headers.
+   If you need a more specific selector, add a class or id to the <th> or use a more specific CSS path. */
+th button {
+  display: block;  /* Makes the button a block element, allowing it to be centered with margin */
+  margin: 0 auto;  /* Auto margins on the sides center the block element horizontally */
+  text-align: center;  /* Centers the icon and text inside the button */
+}
+
+/* Ensure the <th> itself has text-align set to center if the button doesn't fill the entire cell width */
+th {
+  text-align: center;  /* Centers the button within the <th> */
+}
+
+/* Table styles for dark mode */
+body.dark-mode .table {
+    background-color: #333;
+    color: #ddd;
+    border-color: #444;
+}
+
+/* Table header styles for dark mode */
+body.dark-mode .table thead th {
+    background-color: #444;
+    color: rgb(236, 236, 236);
+    vertical-align: middle;
+}
+
+
+body.dark-mode select {
+    background-color: #2a2a2a;
+    color: rgb(236, 236, 236);
+    border-color: #444;
+}
+
+body.dark-mode .pagination .page-link {
+    background-color: #333;
+    color: #ddd;
+    border-color: #444;
+}
+
+body.dark-mode .pagination .page-item.active .page-link {
+    background-color: #555;
+    color: rgb(236, 236, 236);
+}
+
+body.dark-mode .pagination .page-item.disabled .page-link {
+    color: #666; /* Dimmed text color for disabled links */
+    background-color: #333; /* Matching the dark mode background */
+    border-color: #444; /* Slightly visible border */
+    cursor: not-allowed; /* The cursor indicates the link is disabled */
+}
+
+body.dark-mode .table td {
+    color: rgb(236, 236, 236);
 }
 
 /* Optional: Add custom styles for table responsiveness on smaller screens */
@@ -58,4 +166,105 @@ body {
     .table-responsive {
         overflow-x: auto; /* Allows table to scroll horizontally on small screens */
     }
+}
+
+#scrollToTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #007bff; /* Bootstrap primary color, adjust as needed */
+    color: rgb(236, 236, 236);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Ensure it's above other content */
+    display: none; /* Hidden by default, shown when needed */
+    outline: #fff;
+}
+
+#scrollToTopBtn:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+}
+
+.dark-mode #scrollToTopBtn  {
+    outline: #333;
+}
+/* If you're not using Font Awesome, you might want to adjust or remove this */
+#scrollToTopBtn i {
+    font-size: 24px; /* Icon size */
+}
+
+body.dark-mode {
+    background-color: #333;
+    color: rgb(236, 236, 236);
+}
+
+body.dark-mode a {
+    color: #1e90ff;
+}
+
+/* Position the theme switch wrapper at the top right */
+.theme-switch-wrapper {
+    position: fixed; /* Keeps the switch at the same spot even when scrolling */
+    top: 10px; /* Adjusts the distance from the top of the viewport */
+    right: 10px; /* Adjusts the distance from the right of the viewport */
+    display: flex; /* Enables flexbox layout for its children (the switch and label) */
+    align-items: center; /* Centers the switch and label vertically */
+    z-index: 1000; /* Ensures the switch is above most other elements */
+}
+
+/* Style adjustments for the theme switch */
+.theme-switch {
+    display: flex; /* Enables flexbox layout for the switch */
+    align-items: center; /* Centers the switch vertically relative to its container */
+    margin-right: 8px; /* Adds some space between the switch and the label */
+}
+
+/* Ensures the custom input checkbox (toggle) is hidden */
+.theme-switch input[type="checkbox"] {
+    display: none; /* Hides the default checkbox */
+}
+
+.theme-switch em {
+    display: inline-flex; /* Makes the em element a flex container as well */
+    align-items: center; /* Aligns the contents of em (text) vertically */
+    margin-left: 8px; /* Adds some space between the switch and the label */
+}
+
+/* Custom styling for the toggle indicator */
+.toggle-indicator {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Width of the toggle */
+    height: 34px; /* Height of the toggle */
+    background-color: #ccc; /* Default background color */
+    border-radius: 34px; /* Makes the toggle rounded */
+    cursor: pointer;
+    transition: background-color 0.4s; /* Smooth transition for color change */
+}
+
+/* Creates the moving part of the toggle */
+.toggle-indicator:before {
+    content: "";
+    position: absolute;
+    height: 26px; /* Height of the circle inside the toggle */
+    width: 26px; /* Width of the circle inside the toggle */
+    left: 4px; /* Position from the left */
+    bottom: 4px; /* Position from the bottom */
+    background-color: white; /* Color of the circle */
+    transition: transform 0.4s; /* Smooth transition for moving the circle */
+    border-radius: 50%; /* Makes the circle perfectly round */
+}
+
+/* Changes the background color of the toggle when in 'checked' state */
+input:checked + .toggle-indicator {
+    background-color: #007bff; /* Blue background to indicate the 'on' state */
+}
+
+/* Moves the circle to the right when the toggle is in 'checked' state */
+input:checked + .toggle-indicator:before {
+    transform: translateX(26px); /* Moves the circle to the right inside the toggle */
 }

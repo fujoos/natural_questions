@@ -6,3 +6,4 @@ Natural-Questions-Filtered.parquet
 .idea/
 __pycache__/
 venv/
+.vercel
