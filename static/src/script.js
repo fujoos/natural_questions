@@ -1,245 +1,378 @@
 // Dynamically determine the API URL based on the current location
 let apiUrl;
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    apiUrl = '/data'; // Use the localhost server when running locally
+if (
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+) {
+  apiUrl = "/data"; // Use the localhost server when running locally
 } else {
-    apiUrl = 'https://your-deployed-domain.com/data'; // Use the deployed server URL when running in production
+  apiUrl = "https://natural-questions.vercel.app/data"; // Use the deployed server URL when running in production
 }
-
-const RUN_ID = "{{ run_id }}";
 
 // Global variable to track the current page
 let currentPaginationPage = 1;
 
 // On document ready, set up event listeners and fetch initial data
-$(document).ready(function () {
-    const storedRunId = localStorage.getItem('runId');
+$(document).ready(async function () {
+  // Function to toggle dark mode
+  // Function to toggle dark mode
+  const toggleDarkMode = (enable) => {
+    $("body").toggleClass("dark-mode", enable);
+    $("#darkModeToggle").prop("checked", enable);
+    localStorage.setItem("darkMode", enable);
+    updateIframeStylesForDarkMode(enable); // Ensure iframes are updated accordingly
+  };
 
-    // If the run ID has changed (indicating a new run), clear the storage
-    if (storedRunId !== RUN_ID) {
-        console.log('New run detected, clearing local storage...');
-        localStorage.clear();  // Clears the entire localStorage
-        sessionStorage.clear();  // Clears the entire sessionStorage
+  // Check system preference and previously saved user preference
+  const prefersDarkMode = window.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
+  const storedDarkMode = localStorage.getItem("darkMode");
+  const isDarkMode =
+    storedDarkMode !== null ? storedDarkMode === "true" : prefersDarkMode;
 
-        // Update the stored run ID to the current ID
-        localStorage.setItem('runId', RUN_ID);
+  // Apply dark mode based on the resolved preference
+  toggleDarkMode(isDarkMode);
+
+  // Listener for system color scheme changes
+  window.matchMedia("(prefers-color-scheme: dark)").addListener((e) => {
+    // Update dark mode only if user hasn't manually set a preference
+    if (localStorage.getItem("darkMode") === null) {
+      toggleDarkMode(e.matches);
     }
+  });
 
-    fetchData();
+  // Event listener for the dark mode toggle checkbox
+  $("#darkModeToggle").on("change", function () {
+    toggleDarkMode(this.checked);
+  });
+  const storedRunId = localStorage.getItem("runId");
 
-    // Event listener for dataset selector change
-    $('#csv-selector, #page-size').change(function () {
-        currentPaginationPage = 1; // Reset to page 1 when data or page size changes
-        fetchData(); // Fetch data for the new dataset or page size
-    });
+  // If the run ID has changed (indicating a new run), clear the storage
+  if (storedRunId !== RUN_ID) {
+    //console.log("New run detected, clearing local storage...");
+    localStorage.clear(); // Clears the entire localStorage
+    sessionStorage.clear(); // Clears the entire sessionStorage
 
+    // Update the stored run ID to the current ID
+    localStorage.setItem("runId", RUN_ID);
+  }
 
-    // Pagination control click handler
-    $('body').on('click', '.page-link', function (e) {
-        e.preventDefault(); // Prevent default link behavior
-        const page = $(this).data('page'); // Get the page number from the clicked link
-        currentPaginationPage = page; // Update the global page tracker
-        fetchData(page); // Fetch data for the new page
-    });
+  await fetchData();
 
+  // Event listener for dataset selector change
+  $("#csv-selector, #page-size").change(async function () {
+    currentPaginationPage = 1; // Reset to page 1 when data or page size changes
+    await fetchData(); // Fetch data for the new dataset or page size
+  });
+
+  // Pagination control click handler
+  $("body").on("click", ".top-pagination .page-link", async function (e) {
+    e.preventDefault(); // Prevent default link behavior
+    const page = $(this).data("page"); // Get the page number from the clicked link
+    currentPaginationPage = page; // Update the global page tracker
+    await fetchData(page); // Fetch data for the new page
+  });
+
+  // Show the button when the user scrolls down 20px from the top of the document
+  window.onscroll = function () {
+    if (
+      document.body.scrollTop > 20 ||
+      document.documentElement.scrollTop > 20
+    ) {
+      document.getElementById("scrollToTopBtn").style.display = "block";
+    } else {
+      document.getElementById("scrollToTopBtn").style.display = "none";
+    }
+  };
+
+  // When the user clicks the button, scroll to the top of the document smoothly
+  document.getElementById("scrollToTopBtn").onclick = function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 });
+
 // Refresh button event listener to clear cache and fetch new data
-document.addEventListener('DOMContentLoaded', function () {
-    const refreshButton = document.getElementById('refresh-data');
-    refreshButton.addEventListener('click', function () {
-        clearCurrentPageCache(); // Clear cache for the current view
-        fetchData(currentPaginationPage); // Fetch new data
-    });
+document.addEventListener("DOMContentLoaded", function () {
+  const refreshButton = document.getElementById("refresh-data");
+  refreshButton.addEventListener("click", async function () {
+    const icon = this.querySelector('.icon-refresh'); // Assuming the icon has the class 'refresh-icon'
+    icon.classList.add('icon-clicked');
+    clearCurrentPageCache(); // Clear cache for the current view
+    await fetchData(currentPaginationPage); // Fetch new data
+    icon.classList.remove('icon-clicked');
+  });
 });
 
 // Function to clear cache for the current page and settings
 function clearCurrentPageCache() {
-    const selectedFile = $('#csv-selector').val();
-    const pageSize = parseInt($('#page-size').val(), 10);
-    const cacheKey = generateCacheKey(selectedFile, currentPaginationPage, pageSize);
-    sessionStorage.removeItem(cacheKey); // Remove the specific cache entry
-    console.log(`Cache cleared for key: ${cacheKey}`); // Log cache clearance for debugging
+  const selectedFile = $("#csv-selector").val();
+  const pageSize = parseInt($("#page-size").val(), 10);
+  const cacheKey = generateCacheKey(
+    selectedFile,
+    currentPaginationPage,
+    pageSize,
+  );
+  sessionStorage.removeItem(cacheKey); // Remove the specific cache entry
+  //console.log(`Cache cleared for key: ${cacheKey}`); // Log cache clearance for debugging
 }
 
-// Main function to fetch data, with optional page parameter defaulting to the current page
+/**
+ * Fetches data from an API or cache, updates the UI with the fetched data, and handles pagination.
+ * @param {number} page - The current page number to fetch, defaults to the global currentPaginationPage.
+ */
 async function fetchData(page = currentPaginationPage) {
-    const selectedFile = $('#csv-selector').val(); // Get selected dataset
-    const pageSize = parseInt($('#page-size').val(), 10); // Get selected page size
-    const cacheKey = generateCacheKey(selectedFile, page, pageSize); // Generate a unique cache key
+  try {
+    // Hide or reset and Show the loading indicator to inform the user that data is being fetched.
+    hideLoadingIndicator();
+    showLoadingIndicator();
 
-    let data; // Declare data outside try-catch for broader scope
+    // Retrieve the selected dataset and page size from the UI.
+    const selectedFile = $("#csv-selector").val();
+    const pageSize = parseInt($("#page-size").val(), 10);
 
-    try {
-        data = sessionStorage.getItem(cacheKey); // Attempt to retrieve cached data
-        if (!data) {
-            showLoadingIndicator(); // Show loading indicator if fetching new data
-            const response = await fetch(`${apiUrl}?file_id=${selectedFile}&page=${page}&page_size=${pageSize}`);
+    // Generate a unique cache key based on the selected file, current page, and page size.
+    const cacheKey = generateCacheKey(selectedFile, page, pageSize);
 
-            if (!response.ok) {
-                console.error('Failed to load data'); // Log error instead of throwing
-                // Optionally, handle this error by showing a message to the user or retrying the fetch
-                return; // Exit the function or handle the error as appropriate
-            }
+    // Attempt to retrieve the cached data from sessionStorage.
+    let data = sessionStorage.getItem(cacheKey);
 
-            data = await response.json();
+    // If there is no cached data, fetch it from the API.
+    if (!data) {
+      // Construct the API URL with query parameters.
+      const response = await fetch(
+        `${apiUrl}?file_id=${selectedFile}&page=${page}&page_size=${pageSize}`,
+      );
 
-            try {
-                sessionStorage.setItem(cacheKey, JSON.stringify(data)); // Attempt to cache the new data
-                console.log(`Data cached for key: ${cacheKey}`); // Log data caching
-            } catch (e) {
-                if (isQuotaExceeded(e)) { // Check if the error is due to exceeding storage limits
-                    console.warn("Storage limit reached. Not caching this data.", e); // Warn about storage limits
-                } else {
-                    console.error("Error caching data:", e); // Log unexpected caching errors
-                }
-            }
-        } else {
-            data = JSON.parse(data); // Parse the cached JSON data
-            console.log(`Using cached data for key: ${cacheKey}`); // Log usage of cached data
-        }
+      // Check if the response was successful.
+      if (!response.ok) throw new Error("Failed to fetch data from the API.");
 
-        // Wait for updateTable to complete before updating pagination
-        updatePagination(data.currentPage, data.totalPages); // Update pagination controls
-        await updateTable(data.data, data.currentPage, data.pageSize);
+      // Parse the JSON response.
+      data = await response.json();
 
-    } catch (error) {
-        console.error("Error fetching or processing data:", error); // Handle unexpected errors
-    } finally {
-        hideLoadingIndicator(); // Ensure loading indicator is hidden after operation
+      // Cache the fetched data to avoid unnecessary future API requests.
+      sessionStorage.setItem(cacheKey, JSON.stringify(data));
+    } else {
+      // If cached data is found, parse it from JSON.
+      data = JSON.parse(data);
     }
-}
 
-async function fetchDataAsync() {
-    try {
-        await fetchData(); // Assuming fetchData() does not need arguments, or you have provided them
-        // Code here runs after fetchData completes
-    } catch (error) {
-        // Handle errors from fetchData
-        console.error("Error in fetchData:", error);
+    // Validate the structure of the fetched or cached data.
+    if (
+      !data ||
+      typeof data.currentPage === "undefined" ||
+      typeof data.totalPages === "undefined" ||
+      !Array.isArray(data.data)
+    ) {
+      throw new Error("Invalid or corrupt data structure received.");
     }
-}
 
+    // Update the UI pagination controls based on the current page and total pages.
+    await updatePagination(data.currentPage, data.totalPages);
+
+    // Update the data table in the UI with the fetched data.
+    await updateTable(data.data, data.currentPage, data.pageSize);
+  } catch (error) {
+    // Log and handle any errors that occurred during the fetch or processing.
+    console.error("Error fetching or processing data:", error);
+    // Implement error handling UI feedback here (e.g., error messages to the user).
+  } finally {
+    // Hide the loading indicator now that data fetching and processing are complete.
+    hideLoadingIndicator();
+  }
+}
 
 // Function to generate a unique cache key incorporating run ID, file ID, page, and page size
 function generateCacheKey(fileId, page, pageSize) {
-    return `parquetData-${RUN_ID}-${fileId}-${page}-${pageSize}`;
+  return `parquetData-${RUN_ID}-${fileId}-${page}-${pageSize}`;
 }
 
+// Define your CSS as a template
+const iframeCssTemplate = `
+<style>
+    /* Add Font import */
+  @import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
+  
+  /* Add Bootstrap CSS from CDN */
+  @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+
+  /* Your existing styles */
+  body { font-family: 'Manrope', sans-serif;  font-size: 14px; line-height: 1.5; color:#0d0d0d}
+  table { width: 100%; height:auto; border-collapse: collapse; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; line-height: 1.5; color:#0d0d0d}
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #f1f1f1; }
+  ::-webkit-scrollbar-thumb { background: #888; }
+  ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+  /* Dark mode styles */
+  body.dark-mode { background-color: #333; color: rgb(236, 236, 236);}
+  body.dark-mode th, body.dark-mode td { border-color: #444; color: rgb(236, 236, 236); }
+</style>
+`;
+
+function updateIframeStylesForDarkMode(isDarkMode) {
+  $("iframe").each(function () {
+    const iframeDoc = this.contentDocument || this.contentWindow.document;
+    $(iframeDoc.body).toggleClass("dark-mode", isDarkMode);
+  });
+}
+
+// Update the toggle click handler
+$("#darkModeToggle").click(function () {
+  const isDarkMode = $(this).is(":checked");
+  updateIframeStylesForDarkMode(isDarkMode);
+});
+
 function updateTable(data, currentPage, pageSize) {
-    return new Promise((resolve) => {
-        const tableBody = $('#data-rows');
-        tableBody.empty(); // Clear existing table rows
+  return new Promise((resolve) => {
+    const tableBody = $("#data-rows");
+    tableBody.empty(); // Clear existing table rows
 
-        data.forEach(function (row, index) {
-            const tr = $('<tr>');
-            // Calculate the correct index considering the current page and page size
-            const rowIndex = ((currentPage - 1) * pageSize) + (index + 1);
-            // Format rowIndex with a thousand separator
-            const formattedRowIndex = rowIndex.toLocaleString(); // Uses the browser's locale to format
+    // Check if dark mode is currently enabled on the main document
+    const isDarkMode = $("body").hasClass("dark-mode");
 
-            // Append the row index and question
-            tr.append(`<td>${formattedRowIndex}</td>`);
-            tr.append(`<td>${row["question"]}</td>`);
+    // Loop through each data item and create table rows
+    data.forEach(function (row, index) {
+      const tr = $("<tr>");
 
-            // Handle long answers with potential inner tables
-            if (row["long_answers"].trim()) {
-                tr.append(`<td>${row["long_answers"]}</td>`);
-            } else {
-                tr.append(`<td></td>`);
-            }
+      // Calculate the correct index considering the current page and page size
+      const rowIndex = (currentPage - 1) * pageSize + (index + 1);
 
-            // Check if 'short_answers' is empty and handle accordingly
-            if (row["short_answers"].trim()) {
-                tr.append(`<td>${row["short_answers"]}</td>`);
-            } else {
-                // If empty, you could add a placeholder or leave it blank
-                tr.append('<td></td>'); // Option to add a placeholder
-                // tr.append('<td></td>'); // Option to leave the cell blank
-            }
+      // Append the row index and question
+      tr.append(`<td>${rowIndex}</td>`);
+      tr.append(`<td>${row["question"]}</td>`);
 
-            tableBody.append(tr);
+      // Check if the row has long answers and needs an iframe to display them
+      if (row["long_answers"].trim()) {
+        // Construct the srcdoc for the iframe with dark mode styles included if necessary
+        const iframeSrcdoc = `
+          ${iframeCssTemplate} <!-- Assuming iframeCssTemplate is defined elsewhere in your script -->
+          <body class="${isDarkMode ? "dark-mode" : ""}">
+            ${row["long_answers"]}
+          </body>
+        `;
+
+        // Create the iframe element with the constructed srcdoc
+        const iframe = $("<iframe />", {
+          style: "width: 100%; height: auto; border: none; overflow: hidden;",
+          srcdoc: iframeSrcdoc,
+          // Ensure the iframe is sandboxed for security, adjust the sandbox attributes as necessary for your use case
+          //sandbox: "allow-same-origin allow-scripts",
         });
-        resolve(); // Resolve the promise once the update is complete
+
+        // Append an event listener to adjust the iframe's height based on its content after it loads
+        iframe.on("load", function () {
+          this.style.height =
+            this.contentWindow.document.documentElement.scrollHeight + "px";
+        });
+
+        // Create a table cell and append the iframe to it, then append the cell to the row
+        const td = $("<td></td>").append(iframe);
+        tr.append(td);
+      } else {
+        // If no long answers, append an empty cell
+        tr.append(`<td></td>`);
+      }
+
+      // Append short answers as is
+      if (row["short_answers"].trim()) {
+        tr.append(`<td>${row["short_answers"]}</td>`);
+      } else {
+        // If no short answers, append an empty cell
+        tr.append("<td></td>");
+      }
+
+      // Append the constructed row to the table body
+      tableBody.append(tr);
     });
+
+    resolve(); // Resolve the promise once all rows have been appended
+  });
 }
 
 function updatePagination(currentPage, totalPages) {
-    console.log('pagination construction started')
-    const paginationContainer = $('.pagination');
-    paginationContainer.empty(); // Clear existing pagination buttons
+  //console.log("pagination construction started");
+  const paginationContainer = $(".pagination");
+  paginationContainer.empty(); // Clear existing pagination buttons
 
-    // Add 'First' button
-    paginationContainer.append(`<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="1">First</a></li>`);
+  // Add 'First' button
+  paginationContainer.append(
+    `<li class="page-item ${currentPage === 1 ? "disabled" : ""}"><a class="page-link" href="#" data-page="1">First</a></li>`,
+  );
 
-    // Add 'Previous' button
-    paginationContainer.append(`<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a></li>`);
+  // Add 'Previous' button
+  paginationContainer.append(
+    `<li class="page-item ${currentPage === 1 ? "disabled" : ""}"><a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a></li>`,
+  );
 
-    // Determine page numbers to display
-    let startPage = Math.max(currentPage - 2, 1);
-    let endPage = startPage + 4; // Display 5 pages at most
-    if (endPage > totalPages) {
-        endPage = totalPages;
-        startPage = Math.max(endPage - 4, 1);
-    }
+  // Determine page numbers to display
+  let startPage = Math.max(currentPage - 2, 1);
+  let endPage = startPage + 4; // Display 5 pages at most
+  if (endPage > totalPages) {
+    endPage = totalPages;
+    startPage = Math.max(endPage - 4, 1);
+  }
 
-    // Add page number buttons
-    for (let i = startPage; i <= endPage; i++) {
-        paginationContainer.append(`<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`);
-    }
+  // Add page number buttons
+  for (let i = startPage; i <= endPage; i++) {
+    paginationContainer.append(
+      `<li class="page-item ${i === currentPage ? "active" : ""}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`,
+    );
+  }
 
-    // Add 'Next' button
-    paginationContainer.append(`<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage + 1}">Next</a></li>`);
+  // Add 'Next' button
+  paginationContainer.append(
+    `<li class="page-item ${currentPage === totalPages ? "disabled" : ""}"><a class="page-link" href="#" data-page="${currentPage + 1}">Next</a></li>`,
+  );
 
-    // Add 'Last' button
-    paginationContainer.append(`<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${totalPages}">Last</a></li>`);
+  // Add 'Last' button
+  paginationContainer.append(
+    `<li class="page-item ${currentPage === totalPages ? "disabled" : ""}"><a class="page-link" href="#" data-page="${totalPages}">Last</a></li>`,
+  );
 }
 
 function showLoadingIndicator() {
-    $('#table-overlay').show(); // Show the table overlay
-    $('#loading-indicator').show(); // Show the progress bar
-    simulateProgressBar(); // Start simulating progress bar
+  $("#table-overlay").show(); // Show the table overlay
+  $("#loading-indicator").show(); // Show the progress bar
+  simulateProgressBar(); // Start simulating progress bar
 }
 
+// Immediately set progress to 100% and then hide the progress bar
+const PROGRESS_LENGTH = 100;
+
+function completeProgressBar() {
+  $("#loading-indicator .progress-bar")
+    .css("width", "100%")
+    .attr("aria-valuenow", PROGRESS_LENGTH);
+  setTimeout(() => {
+    // Optional delay to ensure users see the progress bar reaching 100%
+    hideLoadingIndicator(); // Hide the progress bar after reaching 100%
+  }, PROGRESS_LENGTH); // Adjust this delay as needed
+}
+
+// Hide and reset the progress bar
 function hideLoadingIndicator() {
-    $('#table-overlay').hide(); // Hide the table overlay
-    $('#loading-indicator').hide(); // Hide the progress bar
-    // Reset progress bar width
-    $('#loading-indicator .progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+  $("#table-overlay").hide(); // Hide the table overlay
+  $("#loading-indicator").hide(); // Hide the progress bar
+  $("#loading-indicator .progress-bar")
+    .css("width", "0%")
+    .attr("aria-valuenow", 0); // Reset progress bar
 }
 
 let progressInterval; // Declare the interval variable outside the function scope
 
 function simulateProgressBar() {
-    clearInterval(progressInterval); // Clear any existing interval to avoid overlaps
-    let progress = 0;
-    progressInterval = setInterval(function () {
-        progress += 10; // Increment progress
-        if (progress <= 100) {
-            $('#loading-indicator .progress-bar').css('width', progress + '%').attr('aria-valuenow', progress);
-        } else {
-            clearInterval(progressInterval); // Stop the interval when progress reaches 100%
-        }
-    }, 100); // Update every 100ms
-}
-
-
-function isQuotaExceeded(e) {
-    let quotaExceeded = false;
-    if (e) {
-        if (e.code) {
-            switch (e.code) {
-                case 22:
-                    quotaExceeded = true;
-                    break;
-                case 1014: // Firefox
-                    if (e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-                        quotaExceeded = true;
-                    }
-                    break;
-            }
-        } else if (e.number === -2147024882) { // Internet Explorer 8
-            quotaExceeded = true;
-        }
+  clearInterval(progressInterval); // Clear any existing interval to avoid overlaps
+  let progress = 0;
+  progressInterval = setInterval(function () {
+    progress += 10; // Increment progress
+    if (progress <= PROGRESS_LENGTH) {
+      $("#loading-indicator .progress-bar")
+        .css("width", progress + "%")
+        .attr("aria-valuenow", progress);
+    } else {
+      clearInterval(progressInterval); // Stop the interval when progress reaches 100%
     }
-    return quotaExceeded;
+  }, PROGRESS_LENGTH); // Update every 100ms
 }
