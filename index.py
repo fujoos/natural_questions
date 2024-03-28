@@ -10,7 +10,7 @@ from os.path import basename, splitext  # Functions for manipulating file paths 
 import pyarrow.parquet as pq  # PyArrow's library for direct Parquet file manipulation
 import pyarrow.csv as pa_csv
 from flask import Flask, jsonify, request, render_template  # Flask web framework and its functions
-from bs4 import BeautifulSoup  # Import BeautifulSoup
+# from bs4 import BeautifulSoup  # Import BeautifulSoup
 
 import base64
 from Crypto.Cipher import AES
@@ -189,35 +189,35 @@ def home():
                            use_minified_js=use_minified_js)
 
 
-# Function to clean HTML content and fix malformed tables
-def clean_html_content(html_content):
-    soup = BeautifulSoup(html_content, 'html.parser')
-
-    # First, identify structured tables by looking for tables that have 'th' elements
-    structured_tables = []
-    for table_element in soup.find_all('table'):
-        if table_element.find('th'):
-            structured_tables.append(table_element)
-
-    # Process each 'tr' element outside structured tables to remove unnecessary 'td' elements
-    for tr_element in soup.find_all('tr'):
-        # Skip this 'tr' element if it's part of a structured table
-        if any(table_element in structured_tables for table_element in tr_element.find_parents('table')):
-            continue
-
-        # Remove unnecessary 'td' elements that contain only backticks or whitespace
-        for td in tr_element.find_all('td'):
-            if td.get_text(strip=True) in {"``", "''", ""}:
-                td.decompose()  # Remove the 'td' element
-
-        # Check if 'tr' element is not already inside a 'table'
-        if not tr_element.find_parent('table'):
-            # Wrap the 'tr' element in a new 'table' element
-            new_table = soup.new_tag('table')
-            new_table.insert(0, tr_element.extract())  # Extract the 'tr' element and insert it into the 'table'
-            soup.append(new_table)  # Append the new 'table' to the soup
-
-    return str(soup)
+# # Function to clean HTML content and fix malformed tables
+# def clean_html_content(html_content):
+#     soup = BeautifulSoup(html_content, 'html.parser')
+#
+#     # First, identify structured tables by looking for tables that have 'th' elements
+#     structured_tables = []
+#     for table_element in soup.find_all('table'):
+#         if table_element.find('th'):
+#             structured_tables.append(table_element)
+#
+#     # Process each 'tr' element outside structured tables to remove unnecessary 'td' elements
+#     for tr_element in soup.find_all('tr'):
+#         # Skip this 'tr' element if it's part of a structured table
+#         if any(table_element in structured_tables for table_element in tr_element.find_parents('table')):
+#             continue
+#
+#         # Remove unnecessary 'td' elements that contain only backticks or whitespace
+#         for td in tr_element.find_all('td'):
+#             if td.get_text(strip=True) in {"``", "''", ""}:
+#                 td.decompose()  # Remove the 'td' element
+#
+#         # Check if 'tr' element is not already inside a 'table'
+#         if not tr_element.find_parent('table'):
+#             # Wrap the 'tr' element in a new 'table' element
+#             new_table = soup.new_tag('table')
+#             new_table.insert(0, tr_element.extract())  # Extract the 'tr' element and insert it into the 'table'
+#             soup.append(new_table)  # Append the new 'table' to the soup
+#
+#     return str(soup)
 
 
 # Route to serve paginated data from a selected Parquet file
