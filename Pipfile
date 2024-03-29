@@ -4,7 +4,10 @@ verify_ssl = false
 name = "pip_conf_index_global"
 
 [packages]
-flask = "*"
+flask = "==2.2.2"
+kaggle = "==1.6.8"
+pycryptodome = "==3.20.0"
+werkzeug = "==2.2.2"
 
 [dev-packages]
 
