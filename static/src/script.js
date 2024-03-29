@@ -141,7 +141,7 @@ async function fetchData(page = currentPaginationPage) {
     if (!data) {
       // Construct the API URL with query parameters.
       const response = await fetch(
-        `${apiUrl}?file_id=${selectedFile}&page=${page}&page_size=${pageSize}`,
+        `${apiUrl}?table_name=${selectedFile}&page=${page}&page_size=${pageSize}`,
       );
 
       // Check if the response was successful.
@@ -178,7 +178,7 @@ async function fetchData(page = currentPaginationPage) {
     // Implement error handling UI feedback here (e.g., error messages to the user).
   } finally {
     // Hide the loading indicator now that data fetching and processing are complete.
-    hideLoadingIndicator();
+    completeProgressBar();
   }
 }
 
@@ -237,7 +237,8 @@ function updateTable(data, currentPage, pageSize) {
       const tr = $("<tr>");
 
       // Calculate the correct index considering the current page and page size
-      const rowIndex = (currentPage - 1) * pageSize + (index + 1);
+      const rowIndex = ((currentPage - 1) * pageSize + (index + 1)).toLocaleString();
+
 
       // Append the row index and question
       tr.append(`<td>${rowIndex}</td>`);

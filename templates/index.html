@@ -35,8 +35,8 @@
     <div class="text-center mb-4">
         <label for="csv-selector">Dataset&nbsp;</label>
         <select id="csv-selector" class="custom-select w-auto">
-            {% for file_id, file_name in file_options.items() %}
-                <option value="{{ file_id }}">{{ file_name | capitalize }}</option>
+           {% for table_name in table_options %}
+                <option value="{{ table_name }}">{{ table_name | capitalize }}</option>
             {% endfor %}
         </select>
     </div>
