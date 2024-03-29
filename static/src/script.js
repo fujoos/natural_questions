@@ -6,7 +6,7 @@ if (
 ) {
   apiUrl = "/data"; // Use the localhost server when running locally
 } else {
-  apiUrl = "https://fujoos.natural_questions.github.io/data"; // Use the deployed server URL when running in production
+  apiUrl = "https://fujoos.github.io/data"; // Use the deployed server URL when running in production
 }
 
 // Global variable to track the current page
