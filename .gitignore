@@ -1,8 +1,3 @@
-Natural-Questions-Base.csv
-Natural-Questions-Filtered.csv
-Natural-Questions-Base.parquet
-Natural-Questions-Filtered.parquet
-data.db
 .git/
 .idea/
 __pycache__/
