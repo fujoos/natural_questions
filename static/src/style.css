@@ -14,8 +14,10 @@ body, .custom-select {
     font-synthesis-style: auto;
     font-synthesis-weight: auto;
     color: #444;
-    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .table-container {

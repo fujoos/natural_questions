@@ -204,8 +204,11 @@ const iframeCssTemplate = `
   @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
 
   /* Your existing styles */
-  body { font-family: 'Geist', 'Manrope', sans-serif;  font-size: 14px; line-height: 1.5; color: #444; text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;}
+  body { font-family: 'Geist', 'Manrope', sans-serif;  margin; 0; font-size: 14px; line-height: 1.5; color: #444; -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;}
+  p {margin: 0;}
   table { width: 100%; height:auto; border-collapse: collapse; color: #444;}
   th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; line-height: 1.5; color: #444;}}
   ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -214,8 +217,10 @@ const iframeCssTemplate = `
   ::-webkit-scrollbar-thumb:hover { background: #555; }
 
   /* Dark mode styles */
-  body.dark-mode { background-color: #0a0a0a; color: rgb(161, 161, 161); text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;}
+  body.dark-mode { margin: 0; background-color: #0a0a0a; color: rgb(161, 161, 161); -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;}
   body.dark-mode th, body.dark-mode td { border-color: #444; color: rgb(161, 161, 161); }
 </style>
 `;
