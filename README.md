@@ -42,5 +42,7 @@ To explore the dataset and use the Flask app:
 2. Ensure Python and Flask are installed.
 3. Navigate to the app directory and run `flask run` to start the server.
 4. Access the web interface at `http://localhost:5000` to interact with the dataset.
+5. See the live demo using the csv files converted to slite db at 'https://fujoos.pythonanywhere.com/'
+6. For enabling automated CSV downloads and conversion to an SQLite database, rename the file [index (auto csv downloads and convert).py] to index.py and substitute it for the current index.py. Additionally, employ env.py to establish your environment variables 
 
-This README provides an overview of the project's context, data processing, and the functionalities of the Flask CSV reader app. For more detailed instructions and documentation, please refer to the specific files and code comments within this repository.
+7. This README provides an overview of the project's context, data processing, and the functionalities of the Flask CSV reader app. For more detailed instructions and documentation, please refer to the specific files and code comments within this repository.
