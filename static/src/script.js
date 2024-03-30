@@ -6,7 +6,7 @@ if (
 ) {
   apiUrl = "/data"; // Use the localhost server when running locally
 } else {
-  apiUrl = "https://fujoos.github.io/data"; // Use the deployed server URL when running in production
+  apiUrl = "https://fujoos.pythonanywhere.com/data"; // Use the deployed server URL when running in production
 }
 
 // Global variable to track the current page
@@ -96,11 +96,11 @@ $(document).ready(async function () {
 document.addEventListener("DOMContentLoaded", function () {
   const refreshButton = document.getElementById("refresh-data");
   refreshButton.addEventListener("click", async function () {
-    const icon = this.querySelector('.icon-refresh'); // Assuming the icon has the class 'refresh-icon'
-    icon.classList.add('icon-clicked');
+    const icon = this.querySelector(".icon-refresh"); // Assuming the icon has the class 'refresh-icon'
+    icon.classList.add("icon-clicked");
     clearCurrentPageCache(); // Clear cache for the current view
     await fetchData(currentPaginationPage); // Fetch new data
-    icon.classList.remove('icon-clicked');
+    icon.classList.remove("icon-clicked");
   });
 });
 
@@ -190,6 +190,13 @@ function generateCacheKey(fileId, page, pageSize) {
 // Define your CSS as a template
 const iframeCssTemplate = `
 <style>
+ @font-face {
+    font-family: 'Geist';
+    src: url('../fonts/Geist/GeistVF.woff') format('woff');
+    src: url('../fonts/Geist/GeistVF.woff2') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
     /* Add Font import */
   @import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
   
@@ -197,17 +204,19 @@ const iframeCssTemplate = `
   @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
 
   /* Your existing styles */
-  body { font-family: 'Manrope', sans-serif;  font-size: 14px; line-height: 1.5; color:#0d0d0d}
-  table { width: 100%; height:auto; border-collapse: collapse; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; line-height: 1.5; color:#0d0d0d}
+  body { font-family: 'Geist', 'Manrope', sans-serif;  font-size: 14px; line-height: 1.5; color: #444; text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;}
+  table { width: 100%; height:auto; border-collapse: collapse; color: #444;}
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; line-height: 1.5; color: #444;}}
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: #f1f1f1; }
   ::-webkit-scrollbar-thumb { background: #888; }
   ::-webkit-scrollbar-thumb:hover { background: #555; }
 
   /* Dark mode styles */
-  body.dark-mode { background-color: #333; color: rgb(236, 236, 236);}
-  body.dark-mode th, body.dark-mode td { border-color: #444; color: rgb(236, 236, 236); }
+  body.dark-mode { background-color: #0a0a0a; color: rgb(161, 161, 161); text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;}
+  body.dark-mode th, body.dark-mode td { border-color: #444; color: rgb(161, 161, 161); }
 </style>
 `;
 
@@ -237,8 +246,10 @@ function updateTable(data, currentPage, pageSize) {
       const tr = $("<tr>");
 
       // Calculate the correct index considering the current page and page size
-      const rowIndex = ((currentPage - 1) * pageSize + (index + 1)).toLocaleString();
-
+      const rowIndex = (
+        (currentPage - 1) * pageSize +
+        (index + 1)
+      ).toLocaleString();
 
       // Append the row index and question
       tr.append(`<td>${rowIndex}</td>`);

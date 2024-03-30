@@ -258,6 +258,12 @@ def get_data():
     # Load paginated data from the specified table
     paginated_data = load_data_segment(table_name, start, page_size)
 
+    for record in paginated_data:
+        # Sentence case 'question' and 'short_answers' fields
+        for field in ['question', 'short_answers']:
+            if record.get(field):
+                record[field] = record[field].capitalize()
+
     # Calculate total records and pages for pagination
     total_records = get_total_records_for_table(table_name)
     total_pages = ceil(total_records / page_size)
