@@ -5,10 +5,20 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+  font-family: 'Satoshi-Variable';
+  src: url('../fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
+       url('../fonts/Satoshi/Satoshi-Variable.woff') format('woff'),
+       url('../fonts/Satoshi/Satoshi-Variable.ttf') format('truetype');
+  font-weight: 300 900; /* Range of weight this font supports */
+  font-display: swap;
+  font-style: normal;
+}
 
 body, .custom-select {
-    font-family: 'Geist', 'Manrope', sans-serif;
-    font-size: 14px;
+    font-family: 'Satoshi-Variable', sans-serif;
+    font-variation-settings: 'wght' 400; /* Minimum weight */
+    font-size: 15px;
     font-feature-settings: "rlig", "calt" 0;
     font-synthesis-small-caps: auto;
     font-synthesis-style: auto;
@@ -183,7 +193,7 @@ body.dark-mode .table thead th {
 
 body.dark-mode select {
     background-color: #2a2a2a;
-    color: rgb(161, 161, 161);
+    color: rgb(255, 255, 255, 0.5);
     border-color: #444;
 }
 

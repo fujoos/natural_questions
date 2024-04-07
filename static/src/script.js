@@ -197,6 +197,17 @@ const iframeCssTemplate = `
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+  font-family: 'Satoshi-Variable';
+  src: url('../fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
+       url('../fonts/Satoshi/Satoshi-Variable.woff') format('woff'),
+       url('../fonts/Satoshi/Satoshi-Variable.ttf') format('truetype');
+  font-weight: 300 900; /* Range of weight this font supports */
+  font-display: swap;
+  font-style: normal;
+}
+
     /* Add Font import */
   @import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
   
@@ -204,24 +215,24 @@ const iframeCssTemplate = `
   @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
 
   /* Your existing styles */
-  body { font-family: 'Geist', 'Manrope', sans-serif;  margin; 0; font-size: 14px; line-height: 1.5; color: #444; -webkit-font-smoothing: antialiased;
+  body { font-family: 'Satoshi-Variable', sans-serif;  font-variation-settings: 'wght' 400; margin; 0; font-size: 15px; line-height: 1.5; color: #444; -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: transparent;}
   p {margin: 0;}
   table { width: 100%; height:auto; border-collapse: collapse; color: #444;}
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; line-height: 1.5; color: #444;}}
+  th, td { font-family: 'Satoshi-Variable', sans-serif; font-variation-settings: 'wght' 400; border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 15px; line-height: 1.5; color: #444;}}
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: #f1f1f1; }
   ::-webkit-scrollbar-thumb { background: #888; }
   ::-webkit-scrollbar-thumb:hover { background: #555; }
 
   /* Dark mode styles */
-  body.dark-mode { margin: 0; background-color: #0a0a0a; color: rgb(161, 161, 161); -webkit-font-smoothing: antialiased;
+  body.dark-mode { margin: 0; background-color: #0a0a0a; color: rgb(255, 255, 255, 0.5); -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: transparent;}
-  body.dark-mode th, body.dark-mode td { border-color: #444; color: rgb(161, 161, 161); }
+  body.dark-mode th, body.dark-mode td { border-color: #444; color: rgb(255, 255, 255, 0.5); }
 </style>
 `;
 
