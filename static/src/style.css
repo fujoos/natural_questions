@@ -18,12 +18,12 @@
 body, .custom-select {
     font-family: 'Satoshi-Variable', sans-serif;
     font-variation-settings: 'wght' 400; /* Minimum weight */
-    font-size: 15px;
+    font-size: 0.95em;
     font-feature-settings: "rlig", "calt" 0;
     font-synthesis-small-caps: auto;
     font-synthesis-style: auto;
     font-synthesis-weight: auto;
-    color: #444;
+    color: #0F1111;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -116,17 +116,18 @@ body.dark-mode .icon-refresh {
     box-shadow: rgba(255, 255, 255, 0.145) 0 0 0 1px, rgba(0, 0, 0, 0.16) 0 1px 2px 0;
     -moz-box-shadow: rgba(255, 255, 255, 0.145) 0 0 0 1px, rgba(0, 0, 0, 0.16) 0 1px 2px 0;
     -webkit-box-shadow: rgba(255, 255, 255, 0.145) 0 0 0 1px, rgba(0, 0, 0, 0.16) 0 1px 2px 0;
-    color: #444;
+    color: #0F1111;
 }
 
 .table th, .table td {
     max-width: none; /* Removes any max-width constraints */
+    line-height: 2.0;
 }
 
 /* Table styles for light mode */
 .table {
     background-color: #fff;
-    color: #0d0d0d;
+    color: #0F1111;
     border-color: #ddd;
 }
 
@@ -154,7 +155,7 @@ th {
 body.dark-mode .table {
     background-color: #0a0a0a;
     color: #ddd;
-    border-color: #444;
+    border-color: #0F1111;
 }
 
 /* Table header styles for dark mode */
@@ -194,13 +195,13 @@ body.dark-mode .table thead th {
 body.dark-mode select {
     background-color: #2a2a2a;
     color: rgb(255, 255, 255, 0.5);
-    border-color: #444;
+    border-color: #0F1111;
 }
 
 body.dark-mode .pagination .page-link {
     background-color: #333;
     color: #ddd;
-    border-color: #444;
+    border-color: #0F1111;
 }
 
 body.dark-mode .pagination .page-item.active .page-link {
@@ -209,9 +210,9 @@ body.dark-mode .pagination .page-item.active .page-link {
 }
 
 body.dark-mode .pagination .page-item.disabled .page-link {
-    color: #666; /* Dimmed text color for disabled links */
+    color: #0F1111; /* Dimmed text color for disabled links */
     background-color: #333; /* Matching the dark mode background */
-    border-color: #444; /* Slightly visible border */
+    border-color: #0F1111; /* Slightly visible border */
     cursor: not-allowed; /* The cursor indicates the link is disabled */
 }
 

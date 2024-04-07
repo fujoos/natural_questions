@@ -1,0 +1,83 @@
+@import url('/static/src/bootstrap.min.css');
+
+@font-face {
+    font-family: 'Satoshi-Variable';
+    src: url('/static/fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
+    url('/static/fonts/Satoshi/Satoshi-Variable.woff') format('woff'),
+    url('/static/fonts/Satoshi/Satoshi-Variable.ttf') format('truetype');
+    font-weight: 300 900; /* Range of weight this font supports */
+    font-display: swap;
+    font-style: normal;
+}
+
+/* Your existing styles */
+body {
+    font-family: 'Satoshi-Variable', sans-serif;
+    font-variation-settings: 'wght' 400;
+    margin: 0;
+    font-size: 0.95em;
+    line-height: 2.0;
+    color: #0F1111;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+}
+
+p {
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    height: auto;
+    border-collapse: collapse;
+    color: #0F1111;
+}
+
+th, td {
+    font-family: 'Satoshi-Variable', sans-serif;
+    font-variation-settings: 'wght' 400;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #0F1111;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    margin: 0;
+    background-color: #0a0a0a;
+    color: rgb(255, 255, 255, 0.5);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.dark-mode th, body.dark-mode td {
+    border-color: #0F1111;
+    color: rgb(255, 255, 255, 0.5);
+}
