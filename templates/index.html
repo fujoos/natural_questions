@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Viewer</title>
     <link rel="stylesheet" href="/static/src/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/src/fonts.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='src/style' + ('.min.css' if use_minified_css else '.css')) }}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/src/jquery-3.6.0.min.js"></script>
     <script>
         const RUN_ID = "{{ run_id }}";  // This line ensures RUN_ID is set correctly
     </script>

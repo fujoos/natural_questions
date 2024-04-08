@@ -1,28 +1,9 @@
-@font-face {
-    font-family: 'Geist';
-    src: url('../fonts/Geist/GeistVF.woff') format('woff');
-    src: url('../fonts/Geist/GeistVF.woff2') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-@font-face {
-  font-family: 'Satoshi-Variable';
-  src: url('../fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
-       url('../fonts/Satoshi/Satoshi-Variable.woff') format('woff'),
-       url('../fonts/Satoshi/Satoshi-Variable.ttf') format('truetype');
-  font-weight: 300 900; /* Range of weight this font supports */
-  font-display: swap;
-  font-style: normal;
-}
-
 body, .custom-select {
     font-family: 'Satoshi-Variable', sans-serif;
     font-variation-settings: 'wght' 400; /* Minimum weight */
     font-size: 0.95em;
+    font-synthesis: none;
     font-feature-settings: "rlig", "calt" 0;
-    font-synthesis-small-caps: auto;
-    font-synthesis-style: auto;
-    font-synthesis-weight: auto;
     color: #0F1111;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -259,6 +240,7 @@ body.dark-mode .table-bordered td, body.dark-mode .table-bordered th {
 /* If you're not using Font Awesome, you might want to adjust or remove this */
 #scrollToTopBtn i {
     font-size: 24px; /* Icon size */
+    color: #fff;
 }
 
 body.dark-mode {
@@ -331,4 +313,67 @@ input:checked + .toggle-indicator {
 /* Moves the circle to the right when the toggle is in 'checked' state */
 input:checked + .toggle-indicator:before {
     transform: translateX(26px); /* Moves the circle to the right inside the toggle */
+}
+
+.placeholder-row td {
+    padding: 10px; /* Adjust padding as needed */
+    vertical-align: middle; /* Centers placeholder vertically */
+    text-align: center; /* Centers placeholder horizontally */
+    position: relative; /* Establishes the TD as a reference for absolute positioning */
+}
+
+.loading-placeholder {
+    display: block; /* This will stack the divs vertically */
+    height: 1em; /* Height for one line of text */
+    margin: 1em auto; /* Adds margin on top and bottom, and centers horizontally */
+    background-color: #f0f0f0; /* Light shade for light mode */
+    border-radius: 8px; /* Rounded corners */
+    animation: placeholderShimmer 1.5s infinite linear forwards;
+}
+
+/* Ensuring the last placeholder doesn't have a margin-bottom */
+.loading-placeholder:last-child {
+    margin-bottom: 0;
+}
+
+@keyframes placeholderShimmer {
+    0% {
+        background-position: -20em 0;
+    }
+    100% {
+        background-position: 20em 0;
+    }
+}
+
+/* Dark mode specific styles */
+body.dark-mode .loading-placeholder {
+    background-color: #333; /* Darker shade for dark mode */
+    background-image: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.2) 4%,
+            rgba(255, 255, 255, 0.1) 25%,
+            rgba(255, 255, 255, 0.2) 36%
+    );
+    background-size: 1000px 100%;
+}
+
+/* Adjust the width for different cells if necessary */
+.placeholder-row td:nth-child(1) .loading-placeholder {
+    margin-top: 0;
+    width: 60%; /* Shorter width for 'Refresh' column, for example */
+}
+
+.placeholder-row td:nth-child(2) .loading-placeholder {
+    margin-top: 0;
+    width: 90%; /* Shorter width for 'Refresh' column, for example */
+}
+
+.placeholder-row td:nth-child(3) .loading-placeholder {
+    margin-top: 0;
+    width: 90%; /* Shorter width for 'Refresh' column, for example */
+}
+
+.placeholder-row td:nth-child(4) .loading-placeholder {
+    margin-top: 0;
+    width: 90%; /* Longer width for 'Short Answers' column */
 }
